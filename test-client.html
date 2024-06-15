@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Socket.IO Client</title>
+	<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+
+<body>
+	<h1>Socket.IO Client</h1>
+	<button id="sendMessage">Send Message to Server</button>
+	<button id="createRoom">Create room</button>
+	<button id="joinRoom">Join room</button>
+	<button id="leaveRoom">Leave room</button>
+	<div id="messages"></div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', (event) => {
+			const socket = io('http://localhost:3000', {
+				autoConnect: false
+			}); // Replace with your server's URL if hosted elsewhere
+
+			socket.auth = {
+				userId: 123,
+				userName: "Mohnish",
+				userAvatar: "www.dicebear.com"
+			}
+
+			socket.connect();
+
+			socket.on('connect', () => {
+				console.log('Connected to the Socket.IO server');
+			});
+
+			socket.on('message', (data) => {
+				console.log('Received message from server:', data);
+				const messageDiv = document.createElement('div');
+				messageDiv.textContent = `Server: ${data}`;
+				document.getElementById('messages').appendChild(messageDiv);
+			});
+
+			socket.on('disconnect', () => {
+				console.log('Disconnected from the Socket.IO server');
+			});
+
+			document.getElementById('sendMessage').addEventListener('click', () => {
+				const message = {type: 'client', content: 'Hello from the client!'};
+				socket.emit('message', message);
+				const messageDiv = document.createElement('div');
+				messageDiv.textContent = `Client: ${message.content}`;
+				document.getElementById('messages').appendChild(messageDiv);
+			});
+
+			document.getElementById('createRoom').addEventListener('click', () => {
+				socket.emit('room:create', 'room1', (res) => {
+					console.log(res);
+				});
+			});
+
+			document.getElementById('joinRoom').addEventListener('click', () => {
+				socket.emit('room:join', 'room1', (res) => {
+					console.log(res);
+				});
+			});
+
+			document.getElementById('leaveRoom').addEventListener('click', () => {
+				socket.emit('room:leave', 'room1', (res) => {
+					console.log(res);
+				});
+			});
+		});
+	</script>
+</body>
+
+</html>

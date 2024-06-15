@@ -1,0 +1,32 @@
+{
+  "name": "watch-party-server",
+  "version": "1.0.0",
+  "description": "Backend server for watch party extension",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: No tests specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohnishsalian0/watch-party-server.git"
+  },
+  "keywords": [
+    "watch party",
+    "chrome extension"
+  ],
+  "author": "Mohnish Salian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mohnishsalian0/watch-party-server/issues"
+  },
+  "homepage": "https://github.com/mohnishsalian0/watch-party-server#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
