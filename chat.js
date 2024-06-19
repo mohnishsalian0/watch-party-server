@@ -1,10 +1,12 @@
 function sendMessage(payload) {
   const socket = this;
   const { userId, userName, userAvatar, room } = socket.user;
-  const { message } = payload;
+  const { messageId, messageType, messageContent } = payload;
 
   socket.to(room).volatile.emit("chat:message", {
-    message,
+    messageId,
+    messageType,
+    messageContent,
     userId,
     userName,
     userAvatar,

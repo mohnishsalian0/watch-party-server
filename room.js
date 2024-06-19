@@ -1,5 +1,6 @@
 function joinRoom(socket, rooms, users) {
   const { userId, userName, userAvatar, room } = socket.user;
+  let isHost = false;
 
   if (!rooms.hasOwnProperty(room)) {
     console.log(`Creating room ${room}...`);
@@ -9,16 +10,19 @@ function joinRoom(socket, rooms, users) {
       hostName: userName,
       hostAvatar: userAvatar,
     };
+    isHost = true;
     console.log(`${userName} is the host`);
   }
 
   rooms[room].users[userId] = {
+    userId,
     userName,
     userAvatar,
-    isHost: true,
+    isHost,
   };
 
   users[userId] = {
+    userId,
     userName,
     userAvatar,
     room,
@@ -57,6 +61,11 @@ function leaveRoom(socket, rooms, users) {
       };
       newHost.isHost = true;
       console.log(`${newHost.userName} is now the host of room: ${room}`);
+      socket.to(room).emit("room:hostChange", {
+        hostId: userIds[0],
+        hostName: newHost.userName,
+        hostAvatar: newHost.userAvatar,
+      });
     }
   } else {
     console.log(`Room "${room}" is empty. Closing room...`);
