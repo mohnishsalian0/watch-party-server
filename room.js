@@ -4,11 +4,11 @@ function joinRoom(socket, rooms, users) {
 
   if (!rooms.hasOwnProperty(room)) {
     console.log(`Creating room ${room}...`);
-    rooms[room] = { users: {} };
+    rooms[room] = { users: {}, tab: {}, candidates: [] };
     rooms[room].host = {
-      hostId: userId,
-      hostName: userName,
-      hostAvatar: userAvatar,
+      id: userId,
+      name: userName,
+      avatar: userAvatar,
     };
     isHost = true;
     console.log(`${userName} is the host`);
@@ -20,7 +20,6 @@ function joinRoom(socket, rooms, users) {
     userAvatar,
     isHost,
   };
-
   users[userId] = {
     userId,
     userName,
@@ -31,9 +30,21 @@ function joinRoom(socket, rooms, users) {
 
   socket.join(room);
 
-  socket.emit("room:users", {
-    users: rooms[room].users,
-  });
+  if (!isHost) {
+    socket.emit("room:existingUsers", {
+      users: rooms[room].users,
+    });
+    socket.emit("tab:redirect", {
+      userId: rooms[room].host.id,
+      userName: rooms[room].host.name,
+      userAvatar: rooms[room].host.avatar,
+      url: rooms[room].tab.url,
+    });
+    socket.emit("call:offer", { offer: rooms[room].offer });
+    socket.emit("call:existingCandidates", {
+      candidates: rooms[room].candidates,
+    });
+  }
 
   socket.to(room).emit("user:joined", {
     userId,
@@ -52,12 +63,12 @@ function leaveRoom(socket, rooms, users) {
   const userIds = Object.keys(rooms[room].users);
   if (userIds.length > 0) {
     // If the user leaving is a host, pick a new host randomly
-    if (userId === rooms[room].host.hostId) {
+    if (userId === rooms[room].host.id) {
       const newHost = rooms[room].users[userIds[0]];
       rooms[room].host = {
-        hostId: userIds[0],
-        hostName: newHost.userName,
-        hostAvatar: newHost.userAvatar,
+        id: userIds[0],
+        name: newHost.userName,
+        avatar: newHost.userAvatar,
       };
       newHost.isHost = true;
       console.log(`${newHost.userName} is now the host of room: ${room}`);
