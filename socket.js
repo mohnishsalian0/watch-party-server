@@ -2,7 +2,7 @@ const { joinRoom, leaveRoom } = require("./room");
 const { playVideo, pauseVideo, seekVideo } = require("./remote");
 const { sendMessage, sendReaction } = require("./chat");
 const { saveUrl, redirectToUrl } = require("./tab");
-const { saveOffer, saveAndSendAnswer, sendNewCandidate } = require("./voice");
+// const { sendOffer, sendAnswer, sendCandidate } = require("./voice");
 
 const rooms = {};
 const users = {};
@@ -49,13 +49,11 @@ function registerSocketHandlers(io) {
     socket.on("tab:url", (payload) => saveUrl(socket, payload, rooms));
     socket.on("tab:redirect", redirectToUrl);
 
-    socket.on("call:offer", (payload) => saveOffer(socket, payload, rooms));
-    socket.on("call:answer", (payload) =>
-      saveAndSendAnswer(socket, payload, rooms),
-    );
-    socket.on("call:newCandidate", (payload) =>
-      sendNewCandidate(socket, payload, rooms),
-    );
+    // socket.on("call:offer", (payload) => sendOffer(socket, payload, users));
+    // socket.on("call:answer", (payload) => sendAnswer(socket, payload, users));
+    // socket.on("call:candidate", (payload) =>
+    //   sendCandidate(socket, payload, users),
+    // );
 
     socket.on("disconnect", handleDisconnect);
 

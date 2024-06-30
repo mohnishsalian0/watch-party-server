@@ -40,10 +40,6 @@ function joinRoom(socket, rooms, users) {
       userAvatar: rooms[room].host.avatar,
       url: rooms[room].tab.url,
     });
-    socket.emit("call:offer", { offer: rooms[room].offer });
-    socket.emit("call:existingCandidates", {
-      candidates: rooms[room].candidates,
-    });
   }
 
   socket.to(room).emit("user:joined", {

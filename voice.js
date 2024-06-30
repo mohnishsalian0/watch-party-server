@@ -1,18 +1,26 @@
-function saveOffer(socket, payload, rooms) {
-  const { room } = socket.user;
-  rooms[room].offer = payload.offer;
+function sendOffer(socket, payload, users) {
+  const { userId } = socket.user;
+  const { offer, receiverId } = payload;
+  const { socketId: receiverSocketId } = users[receiverId];
+  // FIXME:
+  console.log("sjadlfjdsfjaslkd", users[receiverId]);
+  socket.to(receiverSocketId).emit("call:offer", { offer, senderId: userId });
 }
 
-function saveAndSendAnswer(socket, payload, rooms) {
-  const { room } = socket.user;
-  rooms[room].answer = payload.answer;
-  socket.to(room).emit("call:answer", payload);
+function sendAnswer(socket, payload, users) {
+  const { userId } = socket.user;
+  const { answer, receiverId } = payload;
+  const { socketId: receiverSocketId } = users[receiverId];
+  socket.to(receiverSocketId).emit("call:answer", { answer, senderId: userId });
 }
 
-function sendNewCandidate(socket, payload, rooms) {
-  const { room } = socket.user;
-  rooms[room].candidates.push(payload);
-  socket.to(room).emit("call:newCandidate", payload);
+function sendCandidate(socket, payload, users) {
+  const { userId } = socket.user;
+  const { candidate, receiverId } = payload;
+  const { socketId: receiverSocketId } = users[receiverId];
+  socket
+    .to(receiverSocketId)
+    .emit("call:candidate", { candidate, senderId: userId });
 }
 
-module.exports = { saveOffer, saveAndSendAnswer, sendNewCandidate };
+module.exports = { sendOffer, sendAnswer, sendCandidate };

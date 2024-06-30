@@ -1,19 +1,21 @@
-function playVideo() {
+function playVideo(payload) {
   const socket = this;
   const { userId, userName, userAvatar, room } = socket.user;
 
   socket.to(room).volatile.emit("video:play", {
+    ...payload,
     userId,
     userName,
     userAvatar,
   });
 }
 
-function pauseVideo() {
+function pauseVideo(payload) {
   const socket = this;
   const { userId, userName, userAvatar, room } = socket.user;
 
   socket.to(room).volatile.emit("video:pause", {
+    ...payload,
     userId,
     userName,
     userAvatar,
@@ -23,10 +25,9 @@ function pauseVideo() {
 function seekVideo(payload) {
   const socket = this;
   const { userId, userName, userAvatar, room } = socket.user;
-  const { timestamp } = payload;
 
   socket.to(room).volatile.emit("video:seek", {
-    timestamp,
+    ...payload,
     userId,
     userName,
     userAvatar,
