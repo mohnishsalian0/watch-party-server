@@ -49,12 +49,6 @@ function registerSocketHandlers(io) {
     socket.on("tab:url", (payload) => saveUrl(socket, payload, rooms));
     socket.on("tab:redirect", redirectToUrl);
 
-    // socket.on("call:offer", (payload) => sendOffer(socket, payload, users));
-    // socket.on("call:answer", (payload) => sendAnswer(socket, payload, users));
-    // socket.on("call:candidate", (payload) =>
-    //   sendCandidate(socket, payload, users),
-    // );
-
     socket.on("disconnect", handleDisconnect);
 
     socket.onAny(handleAny);
